@@ -1,37 +1,25 @@
-from flask import Flask, render_template_string
-import xml.etree.ElementTree as ET
+from flask import Flask, render_template, send_file, request
+import yaml
+from datetime import datetime
 
 app = Flask(__name__)
 
-# Функция для чтения данных из YML-файла
-def load_data_from_yml(file_path="market.yml"):
-    tree = ET.parse(file_path)
-    root = tree.getroot()
-    date = root.attrib["date"]  # Дата из атрибута yml_catalog
-    offers = []
+# Загружаем данные из YML
+def load_data(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return yaml.safe_load(file)
 
-    # Парсим товары из секции <offer>
-    for offer in root.find("shop").find("offers").findall("offer"):
-        product = {
-            "id": offer.attrib["id"],
-            "name": offer.find("name").text,
-            "stock_quantity": offer.find("stock_quantity").text,
-        }
-        offers.append(product)
-
-    return date, offers
-
-# Загрузка HTML-шаблона из файла
-def load_template(file_path="/stocks/index.html"):
-    with open(file_path, "r", encoding="utf-8") as file:
-        return file.read()
-
-# Главная страница
-@app.route("/")
+# Основной маршрут для отображения остатков
+@app.route('/')
 def index():
-    date, offers = load_data_from_yml()  # Загружаем данные из market.yml
-    template = load_template()  # Загружаем HTML-шаблон
-    return render_template_string(template, date=date, offers=offers)
+    data = load_data("market.yml")  # Путь к вашему файлу YML
+    current_date = datetime.now().strftime("%Y%m%d%H%M%S")  # Дата для предотвращения кеширования
+    return render_template('index.html', products=data['products'], date=current_date)
 
-if __name__ == "__main__":
+# Маршрут для скачивания файла (если нужно)
+@app.route('/download')
+def download():
+    return send_file("market.yml", as_attachment=True)
+
+if __name__ == '__main__':
     app.run(debug=True)
