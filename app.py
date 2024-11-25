@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file, request
+from flask import Flask, render_template, send_file
 import yaml
 from datetime import datetime
 
@@ -16,7 +16,7 @@ def index():
     current_date = datetime.now().strftime("%Y%m%d%H%M%S")  # Дата для предотвращения кеширования
     return render_template('index.html', products=data['products'], date=current_date)
 
-# Маршрут для скачивания файла (если нужно)
+# Маршрут для скачивания файла
 @app.route('/download')
 def download():
     return send_file("market.yml", as_attachment=True)
