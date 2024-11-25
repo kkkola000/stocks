@@ -22,7 +22,7 @@ def load_data_from_yml(file_path="market.yml"):
     return date, offers
 
 # Загрузка HTML-шаблона из файла
-def load_template(file_path="stocks/index.html"):
+def load_template(file_path="/stocks/index.html"):
     with open(file_path, "r", encoding="utf-8") as file:
         return file.read()
 
