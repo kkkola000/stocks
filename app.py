@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 app = Flask(__name__)
 
 # Функция для чтения данных из YML-файла
-def load_data_from_yml(file_path="/stocks/market.yml"):
+def load_data_from_yml(file_path="market.yml"):
     tree = ET.parse(file_path)
     root = tree.getroot()
     date = root.attrib["date"]  # Дата из атрибута yml_catalog
@@ -22,7 +22,7 @@ def load_data_from_yml(file_path="/stocks/market.yml"):
     return date, offers
 
 # Загрузка HTML-шаблона из файла
-def load_template(file_path="/stocks/index.html"):
+def load_template(file_path="index.html"):
     with open(file_path, "r", encoding="utf-8") as file:
         return file.read()
 
